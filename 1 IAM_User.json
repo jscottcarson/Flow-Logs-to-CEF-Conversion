@@ -1,0 +1,65 @@
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+	"Description": "This template creates an ArcSight IAM Group, ArcSight IAM User, and ArcSight Lambda Role. The user gets added to the group and access keys are created for the user. The user access keys can be retrieved from the Cloudformation output tab. The only permission that gets assigned to the group is s3:GetObject. This is so that the CloudTrail Smart Connector will be able to access logs in S3 via the user keys for ingestion in to ArcSight. The Role that gets created is used by a separate Cloudformation template that launches a Lambda function for VPC Flow Log conversion from CloudWatch Logs to CEF format in S3. This role is granted permissions for access to S3, CloudWatch, Lambda, Logs, and Cloudformation.",
+
+	"Resources": {
+		"ArcSightUser": {
+			"Type": "AWS::IAM::User"
+		},
+		"ArcSightGroup": {
+			"Type": "AWS::IAM::Group"
+		},
+		"Users": {
+			"Type": "AWS::IAM::UserToGroupAddition",
+			"Properties": {
+				"GroupName": {
+					"Ref": "ArcSightGroup"
+				},
+				"Users": [{
+					"Ref": "ArcSightUser"
+				}]
+			}
+		},
+		"ArcSightUserPolicies": {
+			"Type": "AWS::IAM::Policy",
+			"Properties": {
+				"PolicyName": "ArcSightUsers",
+				"PolicyDocument": {
+					"Statement": [{
+						"Effect": "Allow",
+						"Action": [   
+                                    "s3:GetObject",
+                                    "s3:ListBucket"
+                                  ],
+						"Resource": "*"
+					}]
+				},
+				"Groups": [{
+					"Ref": "ArcSightGroup"
+				}]
+			}
+		},
+		"ArcSightKeys": {
+			"Type": "AWS::IAM::AccessKey",
+			"Properties": {
+				"UserName": {
+					"Ref": "ArcSightUser"
+				}
+			}
+		}
+	},
+	"Outputs": {
+		"AccessKey": {
+			"Value": {
+				"Ref": "ArcSightKeys"
+			},
+			"Description": "AWSAccessKeyId of new ArcSight user"
+		},
+		"SecretKey": {
+			"Value": {
+				"Fn::GetAtt": ["ArcSightKeys", "SecretAccessKey"]
+			},
+			"Description": "AWSSecretKey of new ArcSight user"
+		}
+	}
+}

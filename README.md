@@ -1,10 +1,7 @@
+The credit for this Lambda function goes to https://mike.lapidak.is/thoughts/exporting-cloudwatch-logs-to-s3-lambda. This project extends this functionality by including the necessary role and deploying all with Cloudformation.
+
 # Flow-Logs-to-CEF-Conversion
 Pulls VPC Flow Logs from Cloudwatch logs, converts to CEF format, and deposits in an S3 bucket.
-
-# IAM_User
-Creates an IAM Group called ArcSightGroup an IAM user called ArcSightUser with access keys and assigns the following permissions:
-S3:GetObject
-S3:ListBucket
 
 # IAM_Lambda_Role
 This creates an IAM Role for the Lambda function to leverage and grants the following permissions:

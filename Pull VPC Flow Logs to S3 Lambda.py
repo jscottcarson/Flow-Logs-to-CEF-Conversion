@@ -37,7 +37,7 @@ def lambda_handler(event, context):
     for t in cleanEvent['logEvents']:
         
         #Transform the data and store it in the temp file. 
-        tempFile.write("CEF:0|AWS CloudWatch|FlowLogs|1.0|src=" + str(t['extractedFields']['srcaddr']) + "|ENI=" + str(t['extractedFields']['instance_id'])+ "|spt=" + str(t['extractedFields']['srcport']) + "|dst=" + str(t['extractedFields']['dstaddr']) + "|dpt=" + str(t['extractedFields']['dstport'])+ "|proto=" + str(t['extractedFields']['protocol'])+ "|start=" + str(t['extractedFields']['start'])+ "|end=" + str(t['extractedFields']['end'])+ "|out=" + str(t['extractedFields']['bytes'])+"\n")
+        tempFile.write("CEF:0|AWS CloudWatch|FlowLogs|1.0|100|src=" + str(t['extractedFields']['srcaddr']) + "|ENI=" + str(t['extractedFields']['instance_id'])+ "|spt=" + str(t['extractedFields']['srcport']) + "|dst=" + str(t['extractedFields']['dstaddr']) + "|dpt=" + str(t['extractedFields']['dstport'])+ "|proto=" + str(t['extractedFields']['protocol'])+ "|start=" + str(t['extractedFields']['start'])+ "|end=" + str(t['extractedFields']['end'])+ "|out=" + str(t['extractedFields']['bytes'])+"\n")
 
     #close the temp file
     tempFile.close()    

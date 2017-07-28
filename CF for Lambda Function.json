@@ -60,23 +60,38 @@
                             "    cleanEvent = json.loads(outEvent)\n\r",
 
                             "    #create a temp file\n",
-                            "    tempFile = open('/tmp/file', 'w+')\n\r",
+							"    tempFile = open('/tmp/file', 'w+')\n\r",
+							
+							"    #create a tmp file for the trigger file\n",
+							"    tempFileTrig = open('/tmp/trigger', 'w+')\n\r",
 
-                            "    #Create the S3 file key\n",
-                            "    key = folderS3 + '/' + prefixS3 + str(int(time.time())) + \".log\"\n\r",
+                            "    #Create the trigger file for ArcSight Folder Follower connector in S3 file key\n",
+                            "    keytrigger = folderS3 + '/' + prefixS3 + \"trigger.cef_ready\"\n\r",
+ 
+                            "    #Create the S3 File Key\n",
+							"    key = folderS3 + '/' + prefixS3 + str(int(time.time())) + \".cef\"\n\r",
 
+							"    #Create the S3 File Key\n",
+    						"    key1 = folderS3 + '/' + prefixS3 + \"trigger.cef_ready\"\n\r",
+							
                             "    #loop through the events line by line\n",
                             "    for t in cleanEvent['logEvents']:\n\r",
 
                             "    #Transform the data and store it in the temp file. Append the VPC name, elastic network interface, and other identifying information.\n",
-                            "        tempFile.write(\"CEF:0|AWS CloudWatch|FlowLogs|1.0\" + \"|VPC=\" + folderS3 + \"|src=\" + str(t['extractedFields']['srcaddr']) + \"|spt=\" + str(t['extractedFields']['srcport']) + \"|dst=\" + str(t['extractedFields']['dstaddr']) + \"|dpt=\" + str(t['extractedFields']['dstport']) + \"|proto=\" + str(t['extractedFields']['protocol']) + \"|start=\" + str(t['extractedFields']['start']) + \"|end=\" + str(t['extractedFields']['end']) + \"|out=\" + str(t['extractedFields']['bytes']))\n\r",
+                            "        tempFile.write(\"CEF:0|AWS CloudWatch|FlowLogs|1.0|100|\" + folderS3 + \"0\" + \"|src=\" + str(t['extractedFields']['srcaddr']) + \" spt=\" + str(t['extractedFields']['srcport']) + \" dst=\" + str(t['extractedFields']['dstaddr']) + \" dpt=\" + str(t['extractedFields']['dstport']) + \" proto=\" + str(t['extractedFields']['protocol']) + \" start=\" + str(t['extractedFields']['start']) + \" end=\" + str(t['extractedFields']['end']) + \" out=\" + str(t['extractedFields']['bytes']))\n\r",
 
                             "    #close the temp file\n",
-                            "    tempFile.close()\n\n",
+							"    tempFile.close()\n\r",
+							
+							"    #open a tmp writer for the trigger file\n",
+							"    tempFileTrig.write(\"Trigger File for ArcSight Folder Follower connector\")\n",
+                            "    tempFileTrig.close()\n\r",
 
                             "    #write the files to s3\n",
-                            "    s3Results = s3.upload_file('/tmp/file', bucketS3, key)\n",
-                            "    print s3Results\n\r"]]
+							"    s3Results = s3.upload_file('/tmp/file', bucketS3, key)\n",
+							"    s3Trig = s3.upload_file('/tmp/trigger', bucketS3, key1)\n",
+							"    print s3Results\n",
+							"    print s3Trig\n\r"]]
 					}
 				},
 				"Runtime": "python2.7",
